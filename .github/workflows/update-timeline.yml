@@ -1,0 +1,33 @@
+name: Update Timeline Data
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run data processing script
+      run: python script.py
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
+        git add travelData.json
+        git commit -m "Update travel data"
+        git push
